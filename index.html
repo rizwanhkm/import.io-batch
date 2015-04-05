@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>Import.io extractor</title>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <div id="settings" class="settings">
+        Connector ID:
+        <input type="text" id="dataSource" value="https://import.io/data/mine/?id=217fe074-f01c-405d-91cc-af63b99c12ea" class="text">
+        <br> Sample URL for Columns :
+        <input type="text" id="sampleURL" class="text" value="https://www.fasttech.com/products/3009/10004420/1393400-hangsen-e-liquid-for-electronic-cigarettes-30ml">
+        <input type="button" id="getColumns" value="Get Columns" class="button">
+        <br>
+
+
+        <input type="file" id="file" class="upload">
+        <br>
+
+        <input type="button" id="getResults" Value="Get Results" class="button">
+    </div>
+
+    <div id="urlcounter"></div>
+
+    <div id="result"></div>
+    <div id="urllist"></div>
+    <table id="resultTable" class="resultTable"></table>
+    <div class="export-wrapper">
+        <a href="#" class="export" id="export">Download the CSV File</a>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://cdn.import.io/js/2.0.0/importio.js"></script>
+    <script src="script-new.js"></script>
+
+</body>
+
+</html>
