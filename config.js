@@ -1,0 +1,2 @@
+var userGuid="";
+var apiKey="";
