@@ -1,12 +1,10 @@
-var sourceGuid;
-var urls = [];
-var columns = [];
-var urlcounter = 0;
-var urlrequestcounter = 0;
-var refreshIntervalId
-var returnedurls = [];
-
-
+var sourceGuid,
+    urls = [],
+    columns = [],
+    urlcounter = 0,
+    urlrequestcounter = 0,
+    refreshIntervalId,
+    returnedurls = [];
 
 importio.init({
     "auth": {
@@ -46,7 +44,6 @@ document.getElementById('file').onchange = function () {
 };
 
 var doneCallback = function (data) {
-    //        console.log("Done, all data:");
 }
 
 function queryurlnumber(number) {
@@ -64,11 +61,20 @@ function queryurlnumber(number) {
                     returnedurls[number] = data[0].data;
                     for (i = 0; i < columns.length; i++) {
                         column = columns[i];
-                        returnedurls[i][column]+="";
-                        returnedurls[number][column] = returnedurls[number][column].replace(/,/g, "");
-                        returnedurls[number][column] = returnedurls[number][column].replace(/;/g, "");
-                        returnedurls[number][column] = returnedurls[number][column].replace(/"/g, "");
-                        returnedurls[number][column] = returnedurls[number][column].replace(/(\r\n|\n|\r)/gm,"");
+                        if ((typeof (returnedurls[number][column]) != "undefined") && (typeof (returnedurls[number][column]) != "object")) {
+                            returnedurls[number][column] = returnedurls[number][column] + "";
+                            returnedurls[number][column] = returnedurls[number][column].replace(/,/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/;/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/"/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/(\r\n|\n|\r)/gm, "");
+                            console.log(number+":"+returnedurls[number][column]);
+                        } else if (typeof (returnedurls[number][column]) == "object") {
+                            returnedurls[number][column] = JSON.stringify(returnedurls[number][column]);
+                            returnedurls[number][column] = returnedurls[number][column].replace(/,/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/;/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/"/g, "");
+                            returnedurls[number][column] = returnedurls[number][column].replace(/(\r\n|\n|\r)/gm, "");
+                        }
                     }
                     console.log("revieved:" + number + ":Recieved" + urlcounter + " URLS");
                 }
@@ -76,35 +82,39 @@ function queryurlnumber(number) {
             return callback;
         }(number)),
         "done": doneCallback,
-        timeout: 3000
+        "fail": function (error, a, b) {
+            console.log("error:" + error + a + b);
+        }
     });
-
 }
 
 function getColumns() {
-    var dataSourceURL = $("#dataSource").val(),
-        sampleURL = $("#sampleURL").val();
-    sourceGuid = importioGetSourceGuidFromUrl(dataSourceURL);
+    $("#result").html("Requesting Column Data");
 
-    importio.query({
-        "connectorGuids": [sourceGuid],
-        "input": {
-            "webpage/url": sampleURL
-        }
-    }, {
-        "data": function (data) {
-            columns = Object.keys(data[0].data);
-            console.log(columns);
+    var dataSourceURL = $("#dataSource").val();
+
+    sourceGuid = importioGetSourceGuidFromUrl(dataSourceURL);
+    var url = "https://api.import.io/store/connector/" + sourceGuid + "/_query?_user=315f6e84-8fd6-449f-ae60-6eccfb9a017e&_apikey=7C2or4Abyj9Hhk%2BzDPQtDcwby5szRxJksOQk2qy%2FrJkvA1F7C82JG2WcDII3ofwuip3BK16Y8JLShCxwHgcErQ%3D%3D";
+
+    var contentType = "application/x-www-form-urlencoded; charset=utf-8";
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        contentType: contentType,
+        success: function (data) {
+            console.log("Data from Server");
+            console.log(data.pageUrl);
+            columns = Object.keys(data.results[0]);
             $("#result").html("Column Data Recieved");
-            var row = "<tr><td>URL</td>",
-                i = 0;
-            for (i = 0; i < columns.length; i++) {
-                row += "<td>" + columns[i] + "</td>";
-            }
-            row += "</tr>";
-            $("#resultTable").find("tbody").append(row);
+            $("#sampleURL").val(data.pageUrl);
+            console.log(columns);
+            console.log(columns.length);
         },
-        "done": doneCallback
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Error: " + errorThrown + " " + textStatus + " " + jqXHR);
+        }
     });
 }
 
@@ -117,6 +127,10 @@ function getResults() {
     returnedurls = [];
     if (columns[1] == null) {
         alert("Click On Get Columns First");
+        return;
+    }
+    if (urls.length === 0) {
+        alert("Please Select A File");
         return;
     }
     setInterval(function () {
@@ -159,8 +173,6 @@ function fetchdata() {
 }
 
 function writeintofile() {
-
-
     var csvData, csv, i, j, row, column, string;
     csv = "";
     row = '\"URL\",';
@@ -172,7 +184,7 @@ function writeintofile() {
     i = 0;
     (function createcsv() {
         row = '\"';
-        row +=urls[i].replace(/(\r\n|\n|\r)/gm,"");
+        row += urls[i].replace(/(\r\n|\n|\r)/gm, "");
         row += '\",';
         console.log(row);
         for (j = 0; j < columns.length; j++) {
@@ -203,11 +215,8 @@ function writeintofile() {
             console.log(downloadLink);
             downloadLink.download = filename;
             downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-
-
         }
     }());
-
 }
 $("#getColumns").on("click", getColumns);
 $("#getResults").on("click", getResults);
