@@ -1,2 +1,0 @@
-var userGuid="";
-var apiKey="";
