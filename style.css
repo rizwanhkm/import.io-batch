@@ -48,7 +48,7 @@ body {
 
 
 .button {
-    margin: 5px;
+    margin: 8px;
     background: #fff;
     border: 1px solid #e7e9e8;
     border-radius: 3px;
@@ -112,7 +112,16 @@ a.export:hover {
     color: #fff;
 }
 .export-wrapper{
+  margin: 20px;
     position: relative;
     top: 20px;
     text-align: center;
+    float: left;
+}
+.download{
+  display: table;
+  align-content: center;
+  text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
