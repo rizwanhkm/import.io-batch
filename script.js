@@ -180,7 +180,7 @@ function fetchdata() {
                 writeintofile();
             }
         }
-    }, 10);
+    }, timegap);
 
 }
 
@@ -221,7 +221,7 @@ function writeintofile() {
         } else {
             var textFileAsBlob = new Blob([csv], {
                 type: 'text/csv;charset=utf-8;'
-                
+
             });
             $('.export').show();
             var downloadLink = document.getElementById("export");
