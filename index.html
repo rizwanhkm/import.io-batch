@@ -7,20 +7,32 @@
 
 
 <body>
-    <div id="settings" class="settings">
-        Connector ID:
-        <input type="text" id="dataSource" value="" class="text">
-        <br> Sample URL for Columns :
-        <input type="text" id="sampleURL" class="text">
-        <input type="button" id="getColumns" value="Get Columns" class="button">
-        <br>
+    <div class="settingscontainer">
+
+        <span id="settings" class="settings">
+            Connector ID:
+            <input type="text" id="dataSource" value="" class="text">
+            <br> Sample URL for Columns :
+            <input type="text" id="sampleURL" class="text">
+            <input type="button" id="getColumns" value="Get Columns" class="button">
+            <br>
 
 
-        <input type="file" id="file" class="upload">
-        <br>
+            <input type="file" id="file" class="upload">
+            <br>
 
-        <input type="button" id="getResults" Value="Get Results" class="button">
-    </div>
+            <input type="button" id="getResults" Value="Get Results" class="button">
+        </span>
+
+        <span id="moresettings" class="moresettings">
+          Characters Per Cell :
+          <input type="number" id="charpercell" class="number"><br>
+          Timegap:
+          <input type="number" id="timegap" class="number"><br>
+
+        </span>
+
+  </div>
 
     <div id="urlcounter"></div>
 
