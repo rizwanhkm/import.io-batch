@@ -3,6 +3,7 @@ body {
     font-weight: 100;
     font-size: 11px;
     width: 100%;
+    font-family: sans-serif;
 /*    overflow: hidden;*/
 }
 
@@ -27,7 +28,7 @@ body {
     border: 1px solid #e7e9e8;
 }
 
-.text {
+.text ,.number {
     margin: 5px;
     background: #fff;
     border: 1px solid #e7e9e8;
@@ -36,14 +37,15 @@ body {
     font-size: 11px;
     height: 31px;
     text-indent: 10px;
-    width: 400px;
+    width: 350px;
 }
 
 .text:hover,
-.text:focus {
+.text:focus .number:hover, .number:focus {
     border: 1px solid #52b17b;
     outline: none;
 }
+
 
 .button {
     margin: 5px;
@@ -60,16 +62,33 @@ body {
     color: #fff;
 }
 
-.settings {
+.settingscontainer{
     margin-left: auto;
     margin-right: auto;
+    display: table;
+    border: 1px solid #000000;
+}
+.settings {
+
     border: 1px solid #52b17b;
     border-radius: 5px;
-    display: table;
+    /*display: table;*/
     align-content: center;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
+    float: left;
+    margin: 20px;
+    padding: 5px;
+}
+
+.moresettings{
+    border: 1px solid #52b17b;
+    border-radius: 5px;
+    float: left;
+    margin: 20px;
+    padding: 5px;
+    align-content: center;
+    text-align: center;
+
 }
 
 .resultTable {
