@@ -2,11 +2,15 @@ var userGuid = "";
 var apiKey = "";
 var maxCharCountperCell = 32750;
 var timegap=100;
+var filename="export.csv";
+var urlfilename="URLs.txt";
 
 $(document).ready( function(){
     $("#charpercell").val(maxCharCountperCell);
     $("#timegap").val(timegap);
-
+    $("#filename").val(filename.split(".")[0]);
+    $("#stopscript").hide();
+    $('.export').hide();
 });
 
 $("#charpercell").on("change", function(){
@@ -17,5 +21,14 @@ $("#charpercell").on("change", function(){
 $("#timegap").on("change", function(){
   timegap = $("#timegap").val();
   window.console.log("Timegap = ", timegap);
+});
 
+$("#csvfilename").on("change", function(){
+  csvfilename = $("#csvfilename").val() + ".csv";
+  window.console.log("CSV Filename = ", csvfilename);
+});
+
+$("#urlfilename").on("change", function(){
+  urlfilename = $("#urlfilename").val() + ".txt";
+  window.console.log("URLs Filename = ", urlfilename);
 });
