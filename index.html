@@ -20,6 +20,7 @@
             <br>
 
             <input type="button" id="getResults" Value="Get Results" class="button">
+            <input type="button" id="stopscript" Value="Stop Script" class="button">
         </span>
 
         <span id="moresettings" class="moresettings">
@@ -27,8 +28,10 @@
           <input type="number" id="charpercell" class="number"><br>
           Timegap :
           <input type="number" id="timegap" class="number"><br>
-          Export File Name :
-          <input type="text" id="filename" class="text"><br>
+          CSV Export File Name :
+          <input type="text" id="csvfilename" class="text"><br>
+          URLs File Name :
+          <input type="text" id="urlfilename" class="text"><br>
         </span>
 
   </div>
@@ -37,13 +40,19 @@
 
     <div id="result"></div>
     <div id="urllist"></div>
-    <div class="export-wrapper">
-        <a href="#" class="export" id="export">Download the CSV File</a>
+    <div class="download">
+        <div class="export-wrapper">
+            <a href="#" class="export" id="csvfiledownload">Download the CSV File</a>
+        </div>
+        <div class="export-wrapper">
+            <a href="#" class="export" id="urlfiledownload">Download the URLs File</a>
+        </div>
     </div>
+
 
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
         <script src="http://cdn.import.io/js/2.0.0/importio.js"></script>
-	<script src="setup.js">
+	<script src="setup.js"></script>
     <script src="script.js"></script>
 
 </body>

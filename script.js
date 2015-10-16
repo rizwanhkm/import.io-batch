@@ -3,7 +3,8 @@ var sourceGuid,
     columns = [],
     urlcounter = 0,
     urlrequestcounter = 0,
-    returnedurls = [];
+    returnedurls = [],
+    stopscript = 0;
 
 importio.init({
     "auth": {
@@ -62,15 +63,11 @@ function queryurlnumber(number) {
                         if ((typeof (returnedurls[number][column]) != "undefined") && (typeof (returnedurls[number][column]) != "object")) {
                             returnedurls[number][column] = returnedurls[number][column] + "";
                             returnedurls[number][column] = returnedurls[number][column].replace(/,/g, "");
-                            returnedurls[number][column] = returnedurls[number][column].replace(/;/g, "");
-                            returnedurls[number][column] = returnedurls[number][column].replace(/"/g, "");
                             returnedurls[number][column] = returnedurls[number][column].replace(/(\r\n|\n|\r)/gm, "");
                             console.log(number + ":" + returnedurls[number][column]);
                         } else if (typeof (returnedurls[number][column]) == "object") {
                             returnedurls[number][column] = JSON.stringify(returnedurls[number][column]);
                             returnedurls[number][column] = returnedurls[number][column].replace(/,/g, "");
-                            returnedurls[number][column] = returnedurls[number][column].replace(/;/g, "");
-                            returnedurls[number][column] = returnedurls[number][column].replace(/"/g, "");
                             returnedurls[number][column] = returnedurls[number][column].replace(/(\r\n|\n|\r)/gm, "");
                         }
                     }
@@ -131,7 +128,6 @@ function getColumns() {
 }
 
 function getResults() {
-
     var dataSourceURL = $("#dataSource").val(),
         sampleURL = $("#sampleURL").val(),
         i = 0;
@@ -146,9 +142,12 @@ function getResults() {
         return;
     }
     setInterval(function () {
-        $("#urlcounter").html("Number Of URLs Parsed :" + urlcounter);
+        $("#urlcounter").html("Number Of URLs Scraped:" + urlcounter);
     }, 100);
+
     $('.export').hide();
+    $('#getResults').hide();
+    $('#stopscript').show();
     fetchdata();
 }
 
@@ -157,7 +156,10 @@ function fetchdata() {
     urlrequestcounter = 0;
     var counter = 0;
     refreshInteralvalId = setInterval(function () {
-        if (urlrequestcounter < urls.length) {
+        if (stopscript === 1){
+          clearInterval(refreshInteralvalId);
+          writeintofile();
+        } else if (urlrequestcounter < urls.length) {
             if (counter === 2000) {
                 clearInterval(refreshInteralvalId);
                 fetchdata();
@@ -176,7 +178,6 @@ function fetchdata() {
             if (urlcounter < urls.length) {
                 fetchdata();
             } else {
-                clearInterval(refreshInteralvalId);
                 writeintofile();
             }
         }
@@ -186,28 +187,27 @@ function fetchdata() {
 
 function writeintofile() {
     var csvData, csv, i, j, row, column, string;
+    var unscrapedurls="";
     csv = "";
     row = '\"URL\",';
-    var filename = "export.csv"
     for (i = 0; i < columns.length; i++) {
         row += '\"' + columns[i] + '\",';
     }
     csv += row + '\n';
     i = 0;
     (function createcsv() {
-        row = '\"';
+        row = "";
         row += urls[i].replace(/(\r\n|\n|\r)/gm, "");
-        row += '\",';
-        console.log(row);
+        row += ' ,';
         for (j = 0; j < columns.length; j++) {
             column = columns[j];
             if (returnedurls[i][column] === undefined) {
-                row += '\" \",';
+                row += ' ,';
             } else {
                 if (returnedurls[i][column].length > maxCharCountperCell) {
-                    row += '\"' + returnedurls[i][column].substring(0, maxCharCountperCell) + '\",';
+                    row += returnedurls[i][column].substring(0, maxCharCountperCell) + ' ,';
                 } else {
-                    row += '\"' + returnedurls[i][column] + '\",';
+                    row += returnedurls[i][column] + ' ,';
                 }
             }
         }
@@ -216,22 +216,44 @@ function writeintofile() {
         csv += row;
         $("#result").html("Writing Into CSV File : " + Math.floor(((i + 1) / returnedurls.length) * 100) + "% Completed");
         i++;
+
+        while(1){
+          if(returnedurls[i] === undefined){
+            unscrapedurls += urls[i].replace(/(\r\n|\n|\r)/gm, "")+"\n";
+            i++;
+          }else {
+            break;
+          }
+        }
+
         if (i < returnedurls.length) {
             setTimeout(createcsv, 10);
         } else {
-            var textFileAsBlob = new Blob([csv], {
+            var csvfile = new Blob([csv], {
                 type: 'text/csv;charset=utf-8;'
-
             });
+            if (unscrapedurls > ""){
+                var unscrapedurlstextfile = new Blob([csv], {
+                  type: 'text/plain;charset=utf-8;'
+                });
+            }
             $('.export').show();
-            var downloadLink = document.getElementById("export");
+            var downloadLink = document.getElementById("csvfiledownload");
             console.log(downloadLink);
-            downloadLink.download = filename;
-            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+            downloadLink.download = csvfilename;
+            downloadLink.href = window.URL.createObjectURL(csvfile);
+            var downloadLink2 = document.getElementById("urlfiledownload");
+            console.log(downloadLink2);
+            downloadLink2.download = urlfilename;
+            downloadLink2.href = window.URL.createObjectURL(unscrapedurlstextfile);
         }
     }());
 }
 
+function returnscrapedurls(){
+    stopscript = 1;
+}
+
 $("#getColumns").on("click", getColumns);
 $("#getResults").on("click", getResults);
-$('.export').hide();
+$("#stopscript").on("click", returnscrapedurls);
