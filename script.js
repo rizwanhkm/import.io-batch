@@ -196,54 +196,56 @@ function writeintofile() {
     csv += row + '\n';
     i = 0;
     (function createcsv() {
-        row = "";
-        row += urls[i].replace(/(\r\n|\n|\r)/gm, "");
-        row += ' ,';
-        for (j = 0; j < columns.length; j++) {
-            column = columns[j];
-            if (returnedurls[i][column] === undefined) {
-                row += ' ,';
-            } else {
-                if (returnedurls[i][column].length > maxCharCountperCell) {
-                    row += returnedurls[i][column].substring(0, maxCharCountperCell) + ' ,';
-                } else {
-                    row += returnedurls[i][column] + ' ,';
-                }
-            }
-        }
-        row += '\n';
-        console.log(row);
-        csv += row;
-        $("#result").html("Writing Into CSV File : " + Math.floor(((i + 1) / returnedurls.length) * 100) + "% Completed");
-        i++;
-
         while(1){
-          if(returnedurls[i] === undefined){
-            unscrapedurls += urls[i].replace(/(\r\n|\n|\r)/gm, "")+"\n";
+          if(returnedurls[i] === undefined && i < urls.length){
+            unscrapedurls += urls[i].replace(/(\r\n|\n|\r)/gm, "");
+            unscrapedurls += '\r\n';
+            window.console.log(i);
             i++;
           }else {
             break;
           }
         }
-
-        if (i < returnedurls.length) {
+        if(returnedurls[i] === undefined && i < urls.length){
+            row = "";
+            row += urls[i].replace(/(\r\n|\n|\r)/gm, "");
+            row += ' ,';
+            for (j = 0; j < columns.length; j++) {
+                column = columns[j];
+                if (returnedurls[i][column] === undefined) {
+                    row += ' ,';
+                } else {
+                    if (returnedurls[i][column].length > maxCharCountperCell) {
+                        row += returnedurls[i][column].substring(0, maxCharCountperCell) + ' ,';
+                    } else {
+                        row += returnedurls[i][column] + ' ,';
+                    }
+                }
+            }
+            row += '\n';
+            // console.log(row);
+            csv += row;
+        }
+        $("#result").html("Writing Into CSV File : " + Math.floor(((i + 1) / urls.length) * 100) + "% Completed");
+        i++;
+        if (i < urls.length) {
             setTimeout(createcsv, 10);
         } else {
             var csvfile = new Blob([csv], {
                 type: 'text/csv;charset=utf-8;'
             });
             if (unscrapedurls > ""){
-                var unscrapedurlstextfile = new Blob([csv], {
+                var unscrapedurlstextfile = new Blob([unscrapedurls], {
                   type: 'text/plain;charset=utf-8;'
                 });
             }
             $('.export').show();
             var downloadLink = document.getElementById("csvfiledownload");
-            console.log(downloadLink);
+            // console.log(downloadLink);
             downloadLink.download = csvfilename;
             downloadLink.href = window.URL.createObjectURL(csvfile);
             var downloadLink2 = document.getElementById("urlfiledownload");
-            console.log(downloadLink2);
+            // console.log(downloadLink2);
             downloadLink2.download = urlfilename;
             downloadLink2.href = window.URL.createObjectURL(unscrapedurlstextfile);
         }
@@ -252,6 +254,9 @@ function writeintofile() {
 
 function returnscrapedurls(){
     stopscript = 1;
+    $("#getResults").show();
+    $("#stopscript").hide();
+    
 }
 
 $("#getColumns").on("click", getColumns);

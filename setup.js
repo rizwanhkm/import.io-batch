@@ -2,13 +2,14 @@ var userGuid = "";
 var apiKey = "";
 var maxCharCountperCell = 32750;
 var timegap=100;
-var filename="export.csv";
+var csvfilename="export.csv";
 var urlfilename="URLs.txt";
 
 $(document).ready( function(){
     $("#charpercell").val(maxCharCountperCell);
     $("#timegap").val(timegap);
-    $("#filename").val(filename.split(".")[0]);
+    $("#csvfilename").val(csvfilename.split(".")[0]);
+    $("#urlfilename").val(urlfilename.split(".")[0]);
     $("#stopscript").hide();
     $('.export').hide();
 });
