@@ -1,5 +1,6 @@
 var userGuid = "";
 var apiKey = "";
+var dataSourceURL="";
 var maxCharCountperCell = 32750;
 var timegap=100;
 var csvfilename="export.csv";
@@ -10,6 +11,7 @@ $(document).ready( function(){
     $("#timegap").val(timegap);
     $("#csvfilename").val(csvfilename.split(".")[0]);
     $("#urlfilename").val(urlfilename.split(".")[0]);
+    $("#dataSource").val(dataSourceURL);
     $("#stopscript").hide();
     $('.export').hide();
 });
